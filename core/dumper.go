@@ -7,12 +7,12 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/araddon/dateparse"
 	"github.com/olivere/elastic"
+	"github.com/schollz/progressbar/v3"
 	"github.com/unionj-cloud/go-doudou/toolkit/constants"
 	"github.com/unionj-cloud/go-doudou/toolkit/stringutils"
 	"github.com/wubin1989/go-esutils"
-	"log"
-	"math"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 )
@@ -53,7 +53,6 @@ func NewDumper(conf Config) *Dumper {
 		panic(err)
 	}
 	options := []elastic.ClientOptionFunc{
-		elastic.SetErrorLog(log.Default()),
 		elastic.SetURL([]string{fmt.Sprintf("%s://%s", inputUrl.Scheme, inputUrl.Host)}...),
 		elastic.SetGzip(true),
 	}
@@ -71,7 +70,6 @@ func NewDumper(conf Config) *Dumper {
 		panic(err)
 	}
 	options = []elastic.ClientOptionFunc{
-		elastic.SetErrorLog(log.Default()),
 		elastic.SetURL([]string{fmt.Sprintf("%s://%s", outputUrl.Scheme, outputUrl.Host)}...),
 		elastic.SetGzip(true),
 	}
@@ -304,12 +302,25 @@ func (d *Dumper) dumpData() {
 		panic(err)
 	}
 
-	var count int64
-	var timeLeft time.Duration
+	bar := progressbar.NewOptions64(
+		total,
+		progressbar.OptionSetWriter(os.Stderr),
+		progressbar.OptionSetWidth(10),
+		progressbar.OptionThrottle(65*time.Millisecond),
+		progressbar.OptionShowCount(),
+		progressbar.OptionShowIts(),
+		progressbar.OptionOnCompletion(func() {
+			fmt.Printf("\n")
+		}),
+		progressbar.OptionSpinnerType(14),
+		progressbar.OptionFullWidth(),
+		progressbar.OptionUseANSICodes(true),
+		progressbar.OptionEnableColorCodes(true),
+	)
+
 	step := d.Conf.Step
 	if !d.Conf.Descending {
 		for start.Before(*end) {
-			now := time.Now()
 			_end := start.Add(step)
 			if _end.After(*end) {
 				_end = *end
@@ -345,19 +356,10 @@ func (d *Dumper) dumpData() {
 				}
 			}
 			start = &_end
-			count += int64(len(docs))
-			cost := time.Since(now)
-			if len(docs) > 0 {
-				rate := int64(math.Ceil(float64(cost.Milliseconds()) / float64(len(docs))))
-				left := total - count
-				timeLeft = time.Duration(rate*left) * time.Millisecond
-			}
-			log.Printf("%d docs dumped, finished %d docs, total %d docs, progress %.2f%%, time left %s, next start date %s",
-				len(docs), count, total, float64(count)/float64(total)*100, timeLeft, start.Format(constants.FORMAT))
+			bar.Add(len(docs))
 		}
 	} else {
 		for end.After(*start) {
-			now := time.Now()
 			_start := end.Add(-step)
 			if _start.Before(*start) {
 				_start = *start
@@ -390,15 +392,7 @@ func (d *Dumper) dumpData() {
 				}
 			}
 			end = &_start
-			count += int64(len(docs))
-			cost := time.Since(now)
-			if len(docs) > 0 {
-				rate := int64(math.Ceil(float64(cost.Milliseconds()) / float64(len(docs))))
-				left := total - count
-				timeLeft = time.Duration(rate*left) * time.Millisecond
-			}
-			log.Printf("%d docs dumped, finished %d docs, total %d docs, progress %.2f%%, time left %s, next end date %s",
-				len(docs), count, total, float64(count)/float64(total)*100, timeLeft, end.Format(constants.FORMAT))
+			bar.Add(len(docs))
 		}
 	}
 }
