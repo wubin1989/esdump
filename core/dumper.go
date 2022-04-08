@@ -215,12 +215,6 @@ func (d *Dumper) getMinMaxTime() (minTime, maxTime *time.Time) {
 			},
 		},
 	}
-	if len(d.Includes) > 0 {
-		paging.Includes = d.Includes
-	}
-	if len(d.Excludes) > 0 {
-		paging.Excludes = d.Excludes
-	}
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	page, err := sourceEs.Page(ctx, paging)
@@ -247,12 +241,6 @@ func (d *Dumper) getMinMaxTime() (minTime, maxTime *time.Time) {
 				Ascending: false,
 			},
 		},
-	}
-	if len(d.Includes) > 0 {
-		paging.Includes = d.Includes
-	}
-	if len(d.Excludes) > 0 {
-		paging.Excludes = d.Excludes
 	}
 	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

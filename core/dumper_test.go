@@ -149,6 +149,102 @@ func TestDumper_DumpDataDesc(t *testing.T) {
 	assert.Equal(t, 3, int(ret))
 }
 
+func TestDumper_DumpData2(t *testing.T) {
+	t.Parallel()
+	esIndex := "test_dumpdata2"
+	dumper := core.NewDumper(core.Config{
+		Input:     input,
+		Output:    esAddr + "/" + esIndex,
+		DumpType:  "data",
+		DateField: "createAt",
+		StartDate: "2020-06-01",
+		EndDate:   "2020-07-01",
+		Step:      240 * time.Hour,
+		Zone:      "UTC",
+	})
+	dumper.Dump()
+	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	ret, err := es.Count(ctx, nil)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, int(ret))
+}
+
+func TestDumper_DumpDataIncludes(t *testing.T) {
+	t.Parallel()
+	esIndex := "test_dumpdataincludes"
+	dumper := core.NewDumper(core.Config{
+		Input:     input,
+		Output:    esAddr + "/" + esIndex,
+		DumpType:  "data",
+		DateField: "createAt",
+		StartDate: "2020-06-01",
+		EndDate:   "2020-07-01",
+		Step:      240 * time.Hour,
+		Zone:      "UTC",
+		Includes:  "id,text",
+	})
+	dumper.Dump()
+	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	ret, err := es.Count(ctx, nil)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, int(ret))
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	list, err := es.List(ctx, nil, nil)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, len(list))
+	doc := list[0].(map[string]interface{})
+	_, ok := doc["type"]
+	assert.False(t, ok)
+	_, ok = doc["createAt"]
+	assert.False(t, ok)
+	_, ok = doc["text"]
+	assert.True(t, ok)
+	_, ok = doc["id"]
+	assert.True(t, ok)
+}
+
+func TestDumper_DumpDataExcludes(t *testing.T) {
+	t.Parallel()
+	esIndex := "test_dumpdataexcludes"
+	dumper := core.NewDumper(core.Config{
+		Input:     input,
+		Output:    esAddr + "/" + esIndex,
+		DumpType:  "data",
+		DateField: "createAt",
+		StartDate: "2020-06-01",
+		EndDate:   "2020-07-01",
+		Step:      240 * time.Hour,
+		Zone:      "UTC",
+		Excludes:  "text",
+	})
+	dumper.Dump()
+	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	ret, err := es.Count(ctx, nil)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, int(ret))
+	ctx, cancel = context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	list, err := es.List(ctx, nil, nil)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, len(list))
+	doc := list[0].(map[string]interface{})
+	_, ok := doc["type"]
+	assert.True(t, ok)
+	_, ok = doc["createAt"]
+	assert.True(t, ok)
+	_, ok = doc["text"]
+	assert.False(t, ok)
+	_, ok = doc["id"]
+	assert.True(t, ok)
+}
+
 func TestDumper_DumpAll(t *testing.T) {
 	t.Parallel()
 	esIndex := "test_dumpall"
