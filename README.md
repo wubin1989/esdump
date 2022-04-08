@@ -17,7 +17,7 @@
 
 ## Compatibility
 
-|Elasticsearch version | Elastic version | Remarks              |
+|Elasticsearch version | Esdump version | Remarks              |
 |----------------------|-----------------|----------------------|
 |7.x                   | 2.x             | Coming soon.         |
 |6.x                   | 1.x             | Actively maintained. |
