@@ -126,6 +126,29 @@ func TestDumper_DumpData(t *testing.T) {
 	assert.Equal(t, 3, int(ret))
 }
 
+func TestDumper_DumpDataDesc(t *testing.T) {
+	t.Parallel()
+	esIndex := "test_dumpdatadesc"
+	dumper := core.NewDumper(core.Config{
+		Input:      input,
+		Output:     esAddr + "/" + esIndex,
+		DumpType:   "data",
+		DateField:  "createAt",
+		StartDate:  "2020-06-01",
+		EndDate:    "",
+		Step:       240 * time.Hour,
+		Zone:       "UTC",
+		Descending: true,
+	})
+	dumper.Dump()
+	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	ret, err := es.Count(ctx, nil)
+	assert.NoError(t, err)
+	assert.Equal(t, 3, int(ret))
+}
+
 func TestDumper_DumpAll(t *testing.T) {
 	t.Parallel()
 	esIndex := "test_dumpall"
