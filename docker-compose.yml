@@ -1,0 +1,25 @@
+version: '3.9'
+
+services:
+  elasticsearch:
+    container_name: elasticsearch
+    image: "docker.elastic.co/elasticsearch/elasticsearch:6.8.12"
+    environment:
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      - "discovery.type=single-node"
+    ports:
+      - "9200:9200"
+    volumes:
+      - ./esdata:/usr/share/elasticsearch/data
+    healthcheck:
+      test: [ "CMD", "curl","-s" ,"-f", "http://localhost:9200/_cat/health" ]
+    networks:
+      - tutorial
+
+networks:
+  tutorial:
+    name: tutorial
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

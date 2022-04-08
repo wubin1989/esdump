@@ -9,7 +9,64 @@
 </p>
 <br/>
 
+[![asciicast](https://asciinema.org/a/qudEF0BjfdFMHrvWOgEWblTGV.svg)](https://asciinema.org/a/qudEF0BjfdFMHrvWOgEWblTGV)
+
+## Introduction
+
+`esdump` is a migration CLI written in Go for migrating index mapping and data from one elasticsearch to another.
+
+## Compatibility
+
+|Elasticsearch version | Elastic version | Remarks              |
+|----------------------|-----------------|----------------------|
+|7.x                   | 2.x             | Coming soon.         |
+|6.x                   | 1.x             | Actively maintained. |
+|5.x                   | 1.x             | Actively maintained. |
+
+## Install
+
+- If go version < 1.17,
 ```shell
-➜  esdump git:(main) ✗ export TZ=Asia/Shanghai && esdump --input=http://localhost:9200/policy_test --output=http://localhost:9200/policy_esdump --date=pubAt --start=2019-01-01 --zone=UTC --step=72h --excludes=html
-   6% |█████████                                                                                           | (11226/167100, 152 it/s) [1m7s:17m3s]
+go get -v github.com/wubin1989/esdump@v1.0.0
 ```
+
+- If go version >= 1.17,
+```shell
+go install -v github.com/wubin1989/esdump@v1.0.0
+```
+
+## Usage
+
+```shell
+➜  ~ esdump -h
+migrate index from one elasticsearch to another
+
+Usage:
+  esdump [flags]
+
+Flags:
+  -d, --date string       date field of docs
+      --desc              ascending or descending order by the date type field specified by date flag
+  -e, --end string        end date, use time.Local as time zone, you may need to set TZ environment variable ahead
+      --excludes string   excludes fields, multiple fields are separated by comma
+  -h, --help              help for esdump
+      --includes string   includes fields, multiple fields are separated by comma
+  -i, --input string      source elasticsearch connection url
+  -l, --limit int         limit for one scroll, it takes effect on the dumping speed (default 1000)
+  -o, --output string     target elasticsearch connection url
+  -s, --start string      start date, use time.Local as time zone, you may need to set TZ environment variable ahead
+      --step duration     step duration (default 24h0m0s)
+  -t, --type string       migration type, such as "mapping", "data", empty means both
+  -v, --version           version for esdump
+  -z, --zone string       time zone of the date type field specified by date flag (default "UTC")
+```
+
+## Example 
+
+```shell
+export TZ=Asia/Shanghai && esdump --input=http://localhost:9200/test --output=http://localhost:9200/test_dump --date=pubAt --start=2019-01-01 --zone=UTC --step=72h --excludes=html
+```
+
+## License
+
+MIT
