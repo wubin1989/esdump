@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-const version = "v0.0.1"
+const version = "v1.0.0"
 
 var (
 	input      string
@@ -57,14 +57,19 @@ func Execute() {
 func init() {
 	rootCmd.Flags().StringVarP(&input, "input", "i", "", "source elasticsearch connection url")
 	rootCmd.Flags().StringVarP(&output, "output", "o", "", `target elasticsearch connection url`)
-	rootCmd.Flags().StringVarP(&dumpType, "type", "t", "", `migration type such as "mapping", "data"`)
-	rootCmd.Flags().StringVarP(&dateField, "date", "d", "", `date field for scroll`)
-	rootCmd.Flags().StringVarP(&startDate, "start", "s", "", `start date`)
-	rootCmd.Flags().StringVarP(&endDate, "end", "e", "", `end date`)
-	rootCmd.Flags().StringVarP(&zone, "zone", "z", "", `time zone`)
-	rootCmd.Flags().StringVar(&includes, "includes", "", `includes`)
-	rootCmd.Flags().StringVar(&excludes, "excludes", "", `excludes`)
-	rootCmd.Flags().BoolVar(&descending, "desc", false, `order`)
-	rootCmd.Flags().DurationVar(&step, "step", 24*time.Hour, `step for scroll by date field`)
-	rootCmd.Flags().IntVarP(&scrollSize, "limit", "l", 1000, `limit for one scroll`)
+	rootCmd.Flags().StringVarP(&dumpType, "type", "t", "", `migration type, such as "mapping", "data", empty means both`)
+	rootCmd.Flags().StringVarP(&dateField, "date", "d", "", `date field of docs`)
+	rootCmd.Flags().StringVarP(&startDate, "start", "s", "", `start date, use time.Local as time zone, you may need to set TZ environment variable ahead`)
+	rootCmd.Flags().StringVarP(&endDate, "end", "e", "", `end date, use time.Local as time zone, you may need to set TZ environment variable ahead`)
+	rootCmd.Flags().StringVarP(&zone, "zone", "z", "UTC", `time zone of the date type field specified by date flag`)
+	rootCmd.Flags().StringVar(&includes, "includes", "", `includes fields, multiple fields are separated by comma`)
+	rootCmd.Flags().StringVar(&excludes, "excludes", "", `excludes fields, multiple fields are separated by comma`)
+	rootCmd.Flags().BoolVar(&descending, "desc", false, `ascending or descending order by the date type field specified by date flag`)
+	rootCmd.Flags().DurationVar(&step, "step", 24*time.Hour, `step duration`)
+	rootCmd.Flags().IntVarP(&scrollSize, "limit", "l", 1000, `limit for one scroll, it takes effect on the dumping speed`)
+	rootCmd.MarkFlagRequired("input")
+	rootCmd.MarkFlagRequired("output")
+	if dumpType != "mapping" {
+		rootCmd.MarkFlagRequired("date")
+	}
 }
