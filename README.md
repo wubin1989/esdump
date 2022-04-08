@@ -10,7 +10,8 @@
 <br/>
 
 ```shell
-➜  esdump git:(main) ✗ export TZ=Asia/Shanghai && esdump --input=http://localhost:9200/policy_test \
---output=http://localhost:9200/policy_esdump --date=pubAt --start=2019-01-01 --zone=UTC --step=72h --excludes=html
-   6% |█████████                                                                 | (11226/167100, 152 it/s) [1m7s:17m3s]
+➜  esdump git:(main) ✗ export TZ=Asia/Shanghai && esdump --input=http://localhost:9200/policy_test \ 
+--output=http://localhost:9200/policy_esdump --date=pubAt --start=2019-01-01 --zone=UTC \ 
+--step=72h --excludes=html
+   6% |█████████                                                          | (11226/167100, 152 it/s) [1m7s:17m3s]
 ```
