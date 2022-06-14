@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"github.com/Jeffail/gabs/v2"
 	"github.com/araddon/dateparse"
-	"github.com/olivere/elastic"
+	"github.com/olivere/elastic/v7"
 	"github.com/schollz/progressbar/v3"
 	"github.com/unionj-cloud/go-doudou/toolkit/constants"
 	"github.com/unionj-cloud/go-doudou/toolkit/stringutils"
-	"github.com/wubin1989/go-esutils"
+	"github.com/wubin1989/go-esutils/v2"
 	"net/url"
 	"os"
 	"strings"
@@ -94,7 +94,7 @@ func NewDumper(conf Config) *Dumper {
 	if len(sourcePath) > 1 {
 		sourceType = sourcePath[1]
 	} else {
-		sourceType = sourceIndex
+		sourceType = "_doc"
 	}
 
 	targetPath := strings.Split(strings.TrimSpace(strings.ReplaceAll(outputUrl.Path, "/", " ")), " ")
@@ -105,7 +105,7 @@ func NewDumper(conf Config) *Dumper {
 	if len(targetPath) > 1 {
 		targetType = targetPath[1]
 	} else {
-		targetType = targetIndex
+		targetType = "_doc"
 	}
 
 	var startTime, endTime *time.Time
@@ -171,8 +171,16 @@ func (d *Dumper) Dump() {
 }
 
 func (d *Dumper) dumpMapping() {
-	sourceEs := esutils.NewEs(d.SourceIndex, d.SourceType, esutils.WithClient(d.SourceClient))
-	targetEs := esutils.NewEs(d.TargetIndex, d.TargetType, esutils.WithClient(d.TargetClient))
+	sourceOptions := []esutils.EsOption{esutils.WithClient(d.SourceClient)}
+	if stringutils.IsNotEmpty(d.SourceType) {
+		sourceOptions = append(sourceOptions, esutils.WithType(d.SourceType))
+	}
+	targetOptions := []esutils.EsOption{esutils.WithClient(d.TargetClient)}
+	if stringutils.IsNotEmpty(d.TargetType) {
+		targetOptions = append(targetOptions, esutils.WithType(d.TargetType))
+	}
+	sourceEs := esutils.NewEs(d.SourceIndex, sourceOptions...)
+	targetEs := esutils.NewEs(d.TargetIndex, targetOptions...)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
@@ -192,7 +200,11 @@ func (d *Dumper) dumpMapping() {
 	defer cancel()
 
 	container := gabs.Wrap(mapping)
-	container = container.Path(fmt.Sprintf("%s.mappings.%s", d.SourceIndex, d.SourceType))
+	sourceType := d.SourceType
+	if stringutils.IsEmpty(sourceType) {
+		sourceType = "_doc"
+	}
+	container = container.Path(fmt.Sprintf("%s.mappings.%s", d.SourceIndex, sourceType))
 	data := container.String()
 
 	err = targetEs.PutMappingJson(ctx, data)
@@ -202,7 +214,11 @@ func (d *Dumper) dumpMapping() {
 }
 
 func (d *Dumper) getMinMaxTime() (minTime, maxTime *time.Time) {
-	sourceEs := esutils.NewEs(d.SourceIndex, d.SourceType, esutils.WithClient(d.SourceClient))
+	sourceOptions := []esutils.EsOption{esutils.WithClient(d.SourceClient)}
+	if stringutils.IsNotEmpty(d.SourceType) {
+		sourceOptions = append(sourceOptions, esutils.WithType(d.SourceType))
+	}
+	sourceEs := esutils.NewEs(d.SourceIndex, sourceOptions...)
 	paging := &esutils.Paging{
 		Skip:  0,
 		Limit: 1,
@@ -261,8 +277,16 @@ func (d *Dumper) getMinMaxTime() (minTime, maxTime *time.Time) {
 }
 
 func (d *Dumper) dumpData() {
-	sourceEs := esutils.NewEs(d.SourceIndex, d.SourceType, esutils.WithClient(d.SourceClient))
-	targetEs := esutils.NewEs(d.TargetIndex, d.TargetType, esutils.WithClient(d.TargetClient))
+	sourceOptions := []esutils.EsOption{esutils.WithClient(d.SourceClient)}
+	if stringutils.IsNotEmpty(d.SourceType) {
+		sourceOptions = append(sourceOptions, esutils.WithType(d.SourceType))
+	}
+	targetOptions := []esutils.EsOption{esutils.WithClient(d.TargetClient)}
+	if stringutils.IsNotEmpty(d.TargetType) {
+		targetOptions = append(targetOptions, esutils.WithType(d.TargetType))
+	}
+	sourceEs := esutils.NewEs(d.SourceIndex, sourceOptions...)
+	targetEs := esutils.NewEs(d.TargetIndex, targetOptions...)
 	start := d.StartTime
 	end := d.EndTime
 

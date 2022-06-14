@@ -21,7 +21,7 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/wubin1989/esdump/cmd"
+import "github.com/wubin1989/esdump/v2/cmd"
 
 func main() {
 	cmd.Execute()

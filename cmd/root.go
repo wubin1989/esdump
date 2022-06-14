@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	"github.com/wubin1989/esdump/core"
+	"github.com/wubin1989/esdump/v2/core"
 	"time"
 )
 

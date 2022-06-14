@@ -8,8 +8,8 @@ import (
 	"github.com/testcontainers/testcontainers-go"
 	"github.com/testcontainers/testcontainers-go/wait"
 	"github.com/unionj-cloud/go-doudou/toolkit/constants"
-	"github.com/wubin1989/esdump/core"
-	"github.com/wubin1989/go-esutils"
+	"github.com/wubin1989/esdump/v2/core"
+	"github.com/wubin1989/go-esutils/v2"
 	"os"
 	"testing"
 	"time"
@@ -76,7 +76,7 @@ func TestMain(m *testing.M) {
 	esAddr = fmt.Sprintf("http://%s:%d", esHost, esPort)
 	esIndex := "test"
 	input = esAddr + "/" + esIndex
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	prepareTestIndex(es)
 	prepareTestData(es)
 	code := m.Run()
@@ -150,7 +150,7 @@ func TestDumper_DumpMapping(t *testing.T) {
 		DumpType: "mapping",
 	})
 	dumper.Dump()
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	ret, err := es.GetMapping(ctx)
@@ -172,7 +172,7 @@ func TestDumper_DumpData(t *testing.T) {
 		Zone:      "UTC",
 	})
 	dumper.Dump()
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	ret, err := es.Count(ctx, nil)
@@ -195,7 +195,7 @@ func TestDumper_DumpDataDesc(t *testing.T) {
 		Descending: true,
 	})
 	dumper.Dump()
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	ret, err := es.Count(ctx, nil)
@@ -217,7 +217,7 @@ func TestDumper_DumpData2(t *testing.T) {
 		Zone:      "UTC",
 	})
 	dumper.Dump()
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	ret, err := es.Count(ctx, nil)
@@ -240,7 +240,7 @@ func TestDumper_DumpDataIncludes(t *testing.T) {
 		Includes:  "id,text",
 	})
 	dumper.Dump()
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	ret, err := es.Count(ctx, nil)
@@ -277,7 +277,7 @@ func TestDumper_DumpDataExcludes(t *testing.T) {
 		Excludes:  "text",
 	})
 	dumper.Dump()
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	ret, err := es.Count(ctx, nil)
@@ -315,7 +315,7 @@ func TestDumper_DumpDataIncludesDesc(t *testing.T) {
 		Descending: true,
 	})
 	dumper.Dump()
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	ret, err := es.Count(ctx, nil)
@@ -353,7 +353,7 @@ func TestDumper_DumpDataExcludesDesc(t *testing.T) {
 		Descending: true,
 	})
 	dumper.Dump()
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	ret, err := es.Count(ctx, nil)
@@ -388,7 +388,7 @@ func TestDumper_DumpAll(t *testing.T) {
 		Zone:      "UTC",
 	})
 	dumper.Dump()
-	es := esutils.NewEs(esIndex, esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
+	es := esutils.NewEs(esIndex, esutils.WithLogger(logrus.StandardLogger()), esutils.WithUrls([]string{esAddr}))
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	ret, err := es.Count(ctx, nil)
