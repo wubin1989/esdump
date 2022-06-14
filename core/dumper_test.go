@@ -21,7 +21,7 @@ func PrepareTestEnvironment() (func(), string, int) {
 	var host string
 	var port int
 	var err error
-	terminateContainer, host, port, err = SetupEs6Container(logrus.New())
+	terminateContainer, host, port, err = SetupEs7Container(logrus.New())
 	if err != nil {
 		panic("failed to setup Elasticsearch container")
 	}
@@ -40,6 +40,51 @@ func SetupEs6Container(logger *logrus.Logger) (func(), string, int, error) {
 			"discovery.type": "single-node",
 		},
 		WaitingFor: wait.ForLog("started"),
+	}
+
+	esC, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
+		ContainerRequest: req,
+		Started:          true,
+	})
+
+	if err != nil {
+		logger.Errorf("error starting Elasticsearch container: %s", err)
+		panic(fmt.Sprintf("%v", err))
+	}
+
+	closeContainer := func() {
+		logger.Info("terminating container")
+		err := esC.Terminate(ctx)
+		if err != nil {
+			logger.Errorf("error terminating Elasticsearch container: %s", err)
+			panic(fmt.Sprintf("%v", err))
+		}
+	}
+
+	host, _ := esC.Host(ctx)
+	p, _ := esC.MappedPort(ctx, "9200/tcp")
+	port := p.Int()
+
+	return closeContainer, host, port, nil
+}
+
+// SetupEs7Container starts elasticsearch 7.17.4 docker container
+func SetupEs7Container(logger *logrus.Logger) (func(), string, int, error) {
+	logger.Info("setup Elasticsearch v7 Container")
+	ctx := context.Background()
+
+	req := testcontainers.ContainerRequest{
+		Image:        "docker.elastic.co/elasticsearch/elasticsearch:7.17.4",
+		Name:         "elasticsearch",
+		ExposedPorts: []string{"9200/tcp"},
+		Env: map[string]string{
+			"node.name":             "single-node",
+			"bootstrap.memory_lock": "true",
+			"cluster.name":          "testcontainers-go",
+			"discovery.type":        "single-node",
+			"ES_JAVA_OPTS":          "-Xms1g -Xmx1g",
+		},
+		WaitingFor: wait.ForLog("Cluster health status changed from [YELLOW] to [GREEN]"),
 	}
 
 	esC, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{

@@ -665,8 +665,6 @@ github.com/oklog/run v1.0.0/go.mod h1:dlhp/R75TPv97u0XWUtDeV/lRKWPKSdTuV0TZvrmrQ
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/olekukonko/tablewriter v0.0.0-20170122224234-a0225b3f23b5/go.mod h1:vsDQFd/mU46D+Z4whnwzcISnGGzXWMclvtLoiIKAKIo=
 github.com/olekukonko/tablewriter v0.0.5/go.mod h1:hPp6KlRPjbx+hW8ykQs1w3UBbZlj6HuIJcUGPhkA7kY=
-github.com/olivere/elastic/v7 v7.0.32 h1:R7CXvbu8Eq+WlsLgxmKVKPox0oOwAE/2T9Si5BnvK6E=
-github.com/olivere/elastic/v7 v7.0.32/go.mod h1:c7PVmLe3Fxq77PIfY/bZmxY/TAamBhCzZ8xDOE09a9k=
 github.com/onsi/ginkgo v0.0.0-20151202141238-7f8ab55aaf3b/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v0.0.0-20170829012221-11459a886d9c/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
@@ -898,8 +896,10 @@ github.com/vmihailenco/msgpack/v5 v5.3.4/go.mod h1:7xyJ9e+0+9SaZT0Wt1RGleJXzli6Q
 github.com/vmihailenco/tagparser/v2 v2.0.0/go.mod h1:Wri+At7QHww0WTrCBeu4J6bNtoV6mEfg5OIWRZA9qds=
 github.com/willf/bitset v1.1.11-0.20200630133818-d5bec3311243/go.mod h1:RjeCKbqT1RxIR/KWY6phxZiaY1IyutSBfGjNPySAYV4=
 github.com/willf/bitset v1.1.11/go.mod h1:83CECat5yLh5zVOf4P1ErAgKA5UDvKtgyUABdr3+MjI=
-github.com/wubin1989/go-esutils/v2 v2.0.1-0.20220614090100-264c9c90c83c h1:sMuB/2qHQWMT8iXYHuaTJ3LgwoGPvpC41ef5V7hNr58=
-github.com/wubin1989/go-esutils/v2 v2.0.1-0.20220614090100-264c9c90c83c/go.mod h1:J1C9NEr+xoTjQ5rMU+/08ZMnEDNY7wDbNo9P0USn+ic=
+github.com/wubin1989/elastic/v7 v7.0.33 h1:sO32B8av+X9zjCMQRG5KqkBXBf/HO2W834ck2PK6NRg=
+github.com/wubin1989/elastic/v7 v7.0.33/go.mod h1:c7PVmLe3Fxq77PIfY/bZmxY/TAamBhCzZ8xDOE09a9k=
+github.com/wubin1989/go-esutils/v2 v2.0.1-0.20220614094125-1bbe21d8edbe h1:zri8K6eGf7hOOPdIl4t4bE2IjeO/gcgJA6L9dOIf9Nk=
+github.com/wubin1989/go-esutils/v2 v2.0.1-0.20220614094125-1bbe21d8edbe/go.mod h1:9vYpvu8siTF6ppgbr52xRFNZaPF/X+MBWwzsRfCfjG0=
 github.com/wubin1989/nacos-sdk-go v1.1.2-0.20220322035024-78853a86edcd/go.mod h1:SBASpd2yasFmpFVecSTawt02j9fks7Bbb1aOLuUh5Zg=
 github.com/xanzy/ssh-agent v0.3.0/go.mod h1:3s9xbODqPuuhK9JV1R321M/FlMZSBvE5aY6eAcqrDh0=
 github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f/go.mod h1:N2zxlSyiKSe5eX1tZViRH5QA0qijqEDrYZiPEAiq3wU=

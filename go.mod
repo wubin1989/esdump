@@ -12,5 +12,7 @@ require (
 	github.com/stretchr/testify v1.7.1
 	github.com/testcontainers/testcontainers-go v0.11.0
 	github.com/unionj-cloud/go-doudou v1.1.6
-	github.com/wubin1989/go-esutils/v2 v2.0.1-0.20220614090100-264c9c90c83c
+	github.com/wubin1989/go-esutils/v2 v2.0.1-0.20220614094125-1bbe21d8edbe
 )
+
+replace github.com/olivere/elastic/v7 v7.0.32 => github.com/wubin1989/elastic/v7 v7.0.33
