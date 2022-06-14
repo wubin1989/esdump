@@ -19,7 +19,7 @@
 
 |Elasticsearch version | Esdump version | Remarks              |
 |----------------------|-----------------|----------------------|
-|7.x                   | 2.x             | Coming soon.         |
+|7.x                   | 2.x             | Actively maintained. |
 |6.x                   | 1.x             | Actively maintained. |
 |5.x                   | 1.x             | Actively maintained. |
 
@@ -27,12 +27,12 @@
 
 - If go version < 1.17,
 ```shell
-go get -v github.com/wubin1989/esdump@v1.0.0
+go get -v github.com/wubin1989/esdump/v2@v2.0.0
 ```
 
 - If go version >= 1.17,
 ```shell
-go install -v github.com/wubin1989/esdump@v1.0.0
+go install -v github.com/wubin1989/esdump/v2@v2.0.0
 ```
 
 ## Usage
